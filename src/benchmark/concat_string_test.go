@@ -2,6 +2,7 @@ package benchmark
 
 import (
 	"bytes"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -22,7 +23,7 @@ func ConcatStringByBytesBuffer(elems []string) string {
 
 	return buf.String()
 }
-/*
+
 func TestConcatStringByAdd(t *testing.T) {
 	a := assert.New(t)
 	elems := []string{"1", "2", "3", "4", "5"}
@@ -36,7 +37,7 @@ func TestConcatStringByBytesBuffer(t *testing.T) {
 	ret := ConcatStringByBytesBuffer(elems)
 	a.Equal("12345", ret)
 }
-*/
+
 func BenchmarkConcatStringByAdd(b *testing.B) {
 	elems := []string{"1", "2", "3", "4", "5"}
 	b.StartTimer()
