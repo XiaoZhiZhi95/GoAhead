@@ -34,9 +34,42 @@ func FillBySettings(st interface{}, settings map[string]interface{}) error {
 	return nil
 }
 
+func FillBySettingsNotPtr(st interface{}, settings map[string]interface{}) error {
+	// Elem() 获取指针指向的值
+	if reflect.TypeOf(st).Kind() != reflect.Struct {
+		return errors.New("第一个参数必须为结构体类型")
+	}
+
+	var field reflect.StructField
+	var ok bool
+
+	for k, v := range settings {
+		if field, ok = reflect.ValueOf(st).Type().FieldByName(k); !ok {
+			continue
+		}
+		if field.Type == reflect.TypeOf(v) {
+			vstr := reflect.ValueOf(st)	// 这是指针
+			vstr.FieldByName(k).Set(reflect.ValueOf(v))	// 给结构体赋值，这里需要是指针类型，才可以赋值
+		}
+	}
+
+	return nil
+}
+
 func TestFillBySettings(t *testing.T)  {
 	var a MyCat
 	err := FillBySettings(&a, map[string]interface{}{
+		"Name": "kk",
+		"Age": 5,
+	})
+	if err != nil {
+		fmt.Println("err = ", err)
+	}
+
+	fmt.Println("after fill a = ", a)
+
+	// 会报错
+	err = FillBySettingsNotPtr(a, map[string]interface{}{
 		"Name": "kk",
 	})
 	if err != nil {
